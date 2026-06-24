@@ -9,25 +9,25 @@ html, body { height: 100%; margin: 0; overflow: hidden; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f1117; color: #e2e8f0; padding: 10px; display: flex; flex-direction: column; }
 
 .header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
-.header h1 { font-size: 9px; }
-.badge { background: #1e3a5f; color: #60a5fa; font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+.header h1 { font-size: 15px; }
+.badge { background: #1e3a5f; color: #60a5fa; font-size: 16px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
 
 .team { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 6px; }
 .team-card { background: #1a1d27; border-radius: 10px; padding: 10px; display: flex; align-items: center; gap: 10px; border: 1px solid #2a2e3a; }
-.team-card img { width: 44px; height: 22px; border-radius: 50%; flex-shrink: 0; }
+.team-card img { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; }
 .team-card .info { flex: 1; }
-.team-card .name { font-size: 9px; font-weight: 600; }
-.team-card .alias { font-size: 13px; color: #64748b; }
-.team-card .days { font-size: 11px; color: #64748b; margin-top: 2px; }
-.shift-tag { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 12px; }
+.team-card .name { font-size: 15px; font-weight: 600; }
+.team-card .alias { font-size: 16px; color: #64748b; }
+.team-card .days { font-size: 16px; color: #64748b; margin-top: 2px; }
+.shift-tag { font-size: 16px; font-weight: 700; padding: 2px 8px; border-radius: 12px; }
 
 .controls { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; flex-wrap: wrap; }
 .legend { display: flex; gap: 10px; flex-wrap: wrap; }
-.legend span { font-size: 13px; display: flex; align-items: center; gap: 8px; }
+.legend span { font-size: 16px; display: flex; align-items: center; gap: 8px; }
 .legend .dot { width: 10px; height: 10px; border-radius: 3px; }
 .nav { margin-left: auto; display: flex; align-items: center; gap: 6px; }
-.nav .month-title { font-size: 11px; font-weight: 600; min-width: 150px; text-align: center; }
-.btn { padding: 10px 24px; border-radius: 6px; border: 1px solid #dfe1e6; background: #1a1d27; font-size: 9px; cursor: pointer; transition: all 0.15s; }
+.nav .month-title { font-size: 16px; font-weight: 600; min-width: 150px; text-align: center; }
+.btn { padding: 10px 24px; border-radius: 6px; border: 1px solid #dfe1e6; background: #1a1d27; font-size: 15px; cursor: pointer; transition: all 0.15s; }
 .btn:hover { background: #1e3a5f; border-color: #3B82F6; color: #60a5fa; }
 .btn-icon { width: 30px; height: 30px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; }
 .btn-primary { background: #2563EB; color: #fff; border-color: #2563EB; }
@@ -35,36 +35,36 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
 .cal { background: #1a1d27; border-radius: 10px; border: 1px solid #2a2e3a; overflow: hidden; flex: 1; display: flex; flex-direction: column; min-height: 0; }
 .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); background: #0f1117; }
-.cal-header div { padding: 8px; text-align: center; font-size: 13px; font-weight: 600; color: #64748b; text-transform: uppercase; }
+.cal-header div { padding: 8px; text-align: center; font-size: 16px; font-weight: 600; color: #64748b; text-transform: uppercase; }
 .cal-grid { display: flex; flex-direction: column; flex: 1; min-height: 0; }
 .cal-cell { min-height: 0; border-right: 1px solid #252830; border-bottom: 1px solid #252830; padding: 5px; overflow: visible; position: relative; }
 .cal-cell:nth-child(7n) { border-right: none; }
 .cal-cell.other { opacity: 0.3; background: #12141a; }
 .cal-cell.today { background: #1e3a5f; outline: 2px solid #3B82F6; outline-offset: -2px; }
 .cal-cell.transition { background: #2a2210; border-left: 3px solid #F59E0B; }
-.cal-cell .day-num { font-size: 13px; font-weight: 600; color: #94a3b8; margin-bottom: 3px; }
+.cal-cell .day-num { font-size: 16px; font-weight: 600; color: #94a3b8; margin-bottom: 3px; }
 .cal-cell.today .day-num { color: #0052CC; }
-.change-badge { font-size: 9px; background: #FF991F; color: #fff; padding: 1px 3px; border-radius: 3px; font-weight: 700; vertical-align: middle; margin-left: 2px; }
-.trans-badge { font-size: 9px; background: #6554C0; color: #fff; padding: 1px 3px; border-radius: 3px; font-weight: 700; vertical-align: middle; margin-left: 2px; }
+.change-badge { font-size: 15px; background: #FF991F; color: #fff; padding: 1px 3px; border-radius: 3px; font-weight: 700; vertical-align: middle; margin-left: 2px; }
+.trans-badge { font-size: 15px; background: #6554C0; color: #fff; padding: 1px 3px; border-radius: 3px; font-weight: 700; vertical-align: middle; margin-left: 2px; }
 .cal-cell .shifts { display: flex; flex-direction: column; gap: 3px; overflow: visible; position: relative; z-index: 2; }
-.s-item { font-size: 13px; padding: 10px 12px; border-radius: 0; display: flex; align-items: center; gap: 8px; margin: 0 -6px; min-height: 22px; overflow: hidden; white-space: nowrap; position: relative; z-index: 2; }
+.s-item { font-size: 16px; padding: 10px 12px; border-radius: 0; display: flex; align-items: center; gap: 8px; margin: 0 -6px; min-height: 22px; overflow: hidden; white-space: nowrap; position: relative; z-index: 2; }
 .s-item.span-start { border-radius: 5px 0 0 5px; margin-left: 0; margin-right: -6px; padding-left: 6px; padding-right: 6px; }
 .s-item.span-mid { border-radius: 0; margin-left: -6px; margin-right: -6px; padding-left: 6px; padding-right: 6px; }
 .s-item.span-end { border-radius: 0 5px 5px 0; margin-left: -6px; margin-right: 0; padding-left: 6px; padding-right: 6px; }
 .s-item.span-single { border-radius: 5px; margin: 0; padding: 10px 16px; }
-.s-item img { width: 16px; height: 16px; border-radius: 50%; }
+.s-item img { width: 24px; height: 24px; border-radius: 50%; }
 .s-item b { min-width: 18px; }
-.s-fd { background: rgba(45, 134, 89, 0.55); color: #6EE7A0; font-weight: 600; padding: 7px 8px; font-size: 13px; border: 1px solid rgba(45, 134, 89, 0.4); }
-.s-bd { background: rgba(192, 101, 48, 0.55); color: #FDBA74; font-weight: 600; padding: 7px 8px; font-size: 13px; border: 1px solid rgba(192, 101, 48, 0.4); }
-.s-fn { background: rgba(109, 75, 160, 0.55); color: #C4B5FD; font-weight: 600; padding: 7px 8px; font-size: 13px; border: 1px solid rgba(109, 75, 160, 0.4); }
-.s-bn { background: rgba(42, 122, 140, 0.55); color: #67E8F9; font-weight: 600; padding: 7px 8px; font-size: 13px; border: 1px solid rgba(42, 122, 140, 0.4); }
+.s-fd { background: rgba(45, 134, 89, 0.55); color: #6EE7A0; font-weight: 600; padding: 7px 8px; font-size: 16px; border: 1px solid rgba(45, 134, 89, 0.4); }
+.s-bd { background: rgba(192, 101, 48, 0.55); color: #FDBA74; font-weight: 600; padding: 7px 8px; font-size: 16px; border: 1px solid rgba(192, 101, 48, 0.4); }
+.s-fn { background: rgba(109, 75, 160, 0.55); color: #C4B5FD; font-weight: 600; padding: 7px 8px; font-size: 16px; border: 1px solid rgba(109, 75, 160, 0.4); }
+.s-bn { background: rgba(42, 122, 140, 0.55); color: #67E8F9; font-weight: 600; padding: 7px 8px; font-size: 16px; border: 1px solid rgba(42, 122, 140, 0.4); }
 
 
 .week-row { display: grid; grid-template-columns: repeat(7, 1fr); position: relative; flex: 1; min-height: 0; }
 .week-row .cal-cell { position: relative; }
 .week-row .cal-cell .shifts { display: none; }
-.shift-overlay { position: absolute; height: 22px; display: flex; align-items: center; gap: 8px; padding: 0 8px; font-size: 13px; font-weight: 600; overflow: hidden; white-space: nowrap; z-index: 5; pointer-events: none; }
-.shift-overlay img { width: 16px; height: 16px; border-radius: 50%; }
+.shift-overlay { position: absolute; height: 22px; display: flex; align-items: center; gap: 8px; padding: 0 8px; font-size: 16px; font-weight: 600; overflow: hidden; white-space: nowrap; z-index: 5; pointer-events: none; }
+.shift-overlay img { width: 24px; height: 24px; border-radius: 50%; }
 .shift-overlay b { min-width: 16px; }
 .shift-overlay.so-fd { background: rgba(45, 134, 89, 0.55); color: #6EE7A0; border: 1px solid rgba(45, 134, 89, 0.4); border-radius: 5px; }
 .shift-overlay.so-fn { background: rgba(109, 75, 160, 0.55); color: #C4B5FD; border: 1px solid rgba(109, 75, 160, 0.4); border-radius: 5px; }
@@ -74,12 +74,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; }
 .modal-bg.open { display: flex; }
 .modal { background: #1a1d27; border-radius: 12px; padding: 10px; width: 90%; max-width: 420px; }
-.modal h3 { font-size: 11px; margin-bottom: 5px; }
+.modal h3 { font-size: 16px; margin-bottom: 5px; }
 .modal .field { margin-bottom: 12px; }
-.modal .field label { display: block; font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 3px; text-transform: uppercase; }
-.modal .field select, .modal .field input { width: 100%; padding: 7px 10px; border: 1px solid #dfe1e6; border-radius: 6px; font-size: 9px; }
+.modal .field label { display: block; font-size: 16px; font-weight: 600; color: #64748b; margin-bottom: 3px; text-transform: uppercase; }
+.modal .field select, .modal .field input { width: 100%; padding: 7px 10px; border: 1px solid #dfe1e6; border-radius: 6px; font-size: 15px; }
 .modal .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
-.modal .actions button { padding: 8px 16px; border-radius: 6px; border: none; font-size: 9px; cursor: pointer; }
+.modal .actions button { padding: 8px 16px; border-radius: 6px; border: none; font-size: 15px; cursor: pointer; }
 .modal .cancel { background: #0f1117; color: #e2e8f0; }
 .modal .save { background: #0052CC; color: #fff; }
 .modal .danger { background: #de350b; color: #fff; margin-right: auto; }
@@ -88,7 +88,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   .team { grid-template-columns: 1fr 1fr; }
   .nav { margin-left: 0; width: 100%; justify-content: center; }
   .cal-cell { min-height: 65px; }
-  .s-item { font-size: 10px; }
+  .s-item { font-size: 15px; }
   .s-item img { display: none; }
 }
 </style>
