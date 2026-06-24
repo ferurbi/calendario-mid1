@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Calendario de Turnos MID1</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f1117; color: #e2e8f0; padding: 20px; }
+
+.header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.header h1 { font-size: 40px; }
+.badge { background: #1e3a5f; color: #60a5fa; font-size: 22px; font-weight: 600; padding: 6px 20px; border-radius: 20px; }
+
+.team { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.team-card { background: #1a1d27; border-radius: 10px; padding: 24px; display: flex; align-items: center; gap: 10px; border: 1px solid #2a2e3a; }
+.team-card img { width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0; }
+.team-card .info { flex: 1; }
+.team-card .name { font-size: 24px; font-weight: 600; }
+.team-card .alias { font-size: 22px; color: #64748b; }
+.team-card .days { font-size: 18px; color: #64748b; margin-top: 2px; }
+.shift-tag { font-size: 20px; font-weight: 700; padding: 2px 8px; border-radius: 12px; }
+
+.controls { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.legend { display: flex; gap: 10px; flex-wrap: wrap; }
+.legend span { font-size: 22px; display: flex; align-items: center; gap: 8px; }
+.legend .dot { width: 10px; height: 10px; border-radius: 3px; }
+.nav { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.nav .month-title { font-size: 30px; font-weight: 600; min-width: 280px; text-align: center; }
+.btn { padding: 24px 24px; border-radius: 6px; border: 1px solid #dfe1e6; background: #1a1d27; font-size: 24px; cursor: pointer; transition: all 0.15s; }
+.btn:hover { background: #1e3a5f; border-color: #3B82F6; color: #60a5fa; }
+.btn-icon { width: 60px; height: 60px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; }
+.btn-primary { background: #2563EB; color: #fff; border-color: #2563EB; }
+.btn-primary:hover { background: #003d99; }
+
+.cal { background: #1a1d27; border-radius: 10px; border: 1px solid #2a2e3a; overflow: hidden; }
+.cal-header { display: grid; grid-template-columns: repeat(7, 1fr); background: #0f1117; }
+.cal-header div { padding: 16px; text-align: center; font-size: 22px; font-weight: 600; color: #64748b; text-transform: uppercase; }
+.cal-grid { display: flex; flex-direction: column; }
+.cal-cell { min-height: 260px; border-right: 1px solid #252830; border-bottom: 1px solid #252830; padding: 5px; overflow: visible; position: relative; }
+.cal-cell:nth-child(7n) { border-right: none; }
+.cal-cell.other { opacity: 0.3; background: #12141a; }
+.cal-cell.today { background: #1e3a5f; outline: 2px solid #3B82F6; outline-offset: -2px; }
+.cal-cell.transition { background: #2a2210; border-left: 3px solid #F59E0B; }
+.cal-cell .day-num { font-size: 22px; font-weight: 600; color: #94a3b8; margin-bottom: 3px; }
+.cal-cell.today .day-num { color: #0052CC; }
+.change-badge { font-size: 14px; background: #FF991F; color: #fff; padding: 1px 3px; border-radius: 3px; font-weight: 700; vertical-align: middle; margin-left: 2px; }
+.trans-badge { font-size: 14px; background: #6554C0; color: #fff; padding: 1px 3px; border-radius: 3px; font-weight: 700; vertical-align: middle; margin-left: 2px; }
+.cal-cell .shifts { display: flex; flex-direction: column; gap: 3px; overflow: visible; position: relative; z-index: 2; }
+.s-item { font-size: 22px; padding: 24px 12px; border-radius: 0; display: flex; align-items: center; gap: 8px; margin: 0 -6px; min-height: 44px; overflow: hidden; white-space: nowrap; position: relative; z-index: 2; }
+.s-item.span-start { border-radius: 5px 0 0 5px; margin-left: 0; margin-right: -6px; padding-left: 16px; padding-right: 6px; }
+.s-item.span-mid { border-radius: 0; margin-left: -6px; margin-right: -6px; padding-left: 6px; padding-right: 6px; }
+.s-item.span-end { border-radius: 0 5px 5px 0; margin-left: -6px; margin-right: 0; padding-left: 6px; padding-right: 16px; }
+.s-item.span-single { border-radius: 5px; margin: 0; padding: 24px 16px; }
+.s-item img { width: 28px; height: 28px; border-radius: 50%; }
+.s-item b { min-width: 18px; }
+.s-fd { background: rgba(45, 134, 89, 0.55); color: #6EE7A0; font-weight: 600; padding: 7px 8px; font-size: 22px; border: 1px solid rgba(45, 134, 89, 0.4); }
+.s-bd { background: rgba(192, 101, 48, 0.55); color: #FDBA74; font-weight: 600; padding: 7px 8px; font-size: 22px; border: 1px solid rgba(192, 101, 48, 0.4); }
+.s-fn { background: rgba(109, 75, 160, 0.55); color: #C4B5FD; font-weight: 600; padding: 7px 8px; font-size: 22px; border: 1px solid rgba(109, 75, 160, 0.4); }
+.s-bn { background: rgba(42, 122, 140, 0.55); color: #67E8F9; font-weight: 600; padding: 7px 8px; font-size: 22px; border: 1px solid rgba(42, 122, 140, 0.4); }
+
+
+.week-row { display: grid; grid-template-columns: repeat(7, 1fr); position: relative; }
+.week-row .cal-cell { position: relative; }
+.week-row .cal-cell .shifts { display: none; }
+.shift-overlay { position: absolute; height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 8px; font-size: 22px; font-weight: 600; overflow: hidden; white-space: nowrap; z-index: 5; pointer-events: none; }
+.shift-overlay img { width: 28px; height: 28px; border-radius: 50%; }
+.shift-overlay b { min-width: 16px; }
+.shift-overlay.so-fd { background: rgba(45, 134, 89, 0.55); color: #6EE7A0; border: 1px solid rgba(45, 134, 89, 0.4); border-radius: 5px; }
+.shift-overlay.so-fn { background: rgba(109, 75, 160, 0.55); color: #C4B5FD; border: 1px solid rgba(109, 75, 160, 0.4); border-radius: 5px; }
+.shift-overlay.so-bd { background: rgba(192, 101, 48, 0.55); color: #FDBA74; border: 1px solid rgba(192, 101, 48, 0.4); border-radius: 5px; }
+.shift-overlay.so-bn { background: rgba(42, 122, 140, 0.55); color: #67E8F9; border: 1px solid rgba(42, 122, 140, 0.4); border-radius: 5px; }
+
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; }
+.modal-bg.open { display: flex; }
+.modal { background: #1a1d27; border-radius: 12px; padding: 24px; width: 90%; max-width: 420px; }
+.modal h3 { font-size: 32px; margin-bottom: 14px; }
+.modal .field { margin-bottom: 12px; }
+.modal .field label { display: block; font-size: 22px; font-weight: 600; color: #64748b; margin-bottom: 3px; text-transform: uppercase; }
+.modal .field select, .modal .field input { width: 100%; padding: 7px 10px; border: 1px solid #dfe1e6; border-radius: 6px; font-size: 26px; }
+.modal .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+.modal .actions button { padding: 16px 16px; border-radius: 6px; border: none; font-size: 26px; cursor: pointer; }
+.modal .cancel { background: #0f1117; color: #e2e8f0; }
+.modal .save { background: #0052CC; color: #fff; }
+.modal .danger { background: #de350b; color: #fff; margin-right: auto; }
+
+@media (max-width: 768px) {
+  .team { grid-template-columns: 1fr 1fr; }
+  .nav { margin-left: 0; width: 100%; justify-content: center; }
+  .cal-cell { min-height: 65px; }
+  .s-item { font-size: 16px; }
+  .s-item img { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>&#128197; Calendario de Turnos - MID1</h1>
+  <span class="badge">FN &#8594; BD &#8594; BN &#8594; FD</span>
+  <span style="font-size:11px;color:#6b778c;margin-left:auto">FD/FN: Dom-Mie | BD/BN: Mie-Sab | Rotacion cada 3 meses</span>
+</div>
+<div id="team" class="team"></div>
+<div class="controls">
+  <div class="legend">
+    <span><span class="dot" style="background:#F59E0B"></span>Dia</span>
+    <span><span class="dot" style="background:#1D4ED8"></span>Noche</span>
+    <span><span class="dot" style="background:#6554C0"></span>Transicion</span>
+  </div>
+  <div class="nav">
+    <button class="btn btn-icon" id="prev-btn">&#9664;</button>
+    <span class="month-title" id="month-title"></span>
+    <button class="btn btn-icon" id="next-btn">&#9654;</button>
+    <button class="btn" id="today-btn">Hoy</button>
+    <button class="btn btn-primary" id="edit-btn">&#9998; Editar</button>
+  </div>
+</div>
+<div class="cal">
+  <div class="cal-header"><div>Dom</div><div>Lun</div><div>Mar</div><div>Mie</div><div>Jue</div><div>Vie</div><div>Sab</div></div>
+  <div id="cal-grid" class="cal-grid"></div>
+</div>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">Editar Rotacion</h3>
+    <div class="field"><label>FN - Front Night (Dom-Mie noche)</label><select id="m-fn"></select></div>
+    <div class="field"><label>BD - Back Day (Mie-Sab dia)</label><select id="m-bd"></select></div>
+    <div class="field"><label>BN - Back Night (Mie-Sab noche)</label><select id="m-bn"></select></div>
+    <div class="field"><label>FD - Front Day (Dom-Mie dia)</label><select id="m-fd"></select></div>
+    <div class="field"><label>Fecha inicio</label><input type="date" id="m-date"></div>
+    <div class="actions">
+      <button class="danger" id="modal-del">Eliminar</button>
+      <button class="cancel" id="modal-cancel">Cancelar</button>
+      <button class="save" id="modal-save">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var PEOPLE = [
+    { alias: 'ferurbi', name: 'Fernando Urbina', photo: 'data:image/jpeg;base64,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' },
+    { alias: 'juaortg', name: 'Juan Luis Espinoza', photo: 'data:image/jpeg;base64,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' },
+    { alias: 'reynafma', name: 'Reynaldo Manzanilla', photo: 'data:image/jpeg;base64,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' },
+    { alias: 'ivanechc', name: 'Ivan Chan', photo: 'data:image/jpeg;base64,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' }
+  ];
+
+  var SHIFTS = ['FN', 'BD', 'BN', 'FD'];
+  var MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+  // Rotations: start Jun, Sep, Dec, Mar
+  var rotations = [
+    { start: '2025-06-01', FN:'juaortg', BD:'ivanechc', BN:'ferurbi', FD:'reynafma' },
+    { start: '2025-09-01', FN:'reynafma', BD:'juaortg', BN:'ivanechc', FD:'ferurbi' },
+    { start: '2025-12-01', FN:'ivanechc', BD:'ferurbi', BN:'reynafma', FD:'juaortg' },
+    { start: '2026-03-01', FN:'juaortg', BD:'ivanechc', BN:'ferurbi', FD:'reynafma' },
+    { start: '2026-06-01', FN:'reynafma', BD:'juaortg', BN:'ivanechc', FD:'ferurbi' },
+    { start: '2026-09-01', FN:'ferurbi', BD:'reynafma', BN:'juaortg', FD:'ivanechc' },
+    { start: '2026-12-01', FN:'ivanechc', BD:'ferurbi', BN:'reynafma', FD:'juaortg' },
+    { start: '2027-03-01', FN:'juaortg', BD:'ivanechc', BN:'ferurbi', FD:'reynafma' },
+    { start: '2027-06-01', FN:'reynafma', BD:'juaortg', BN:'ivanechc', FD:'ferurbi' },
+    { start: '2027-09-01', FN:'ferurbi', BD:'reynafma', BN:'juaortg', FD:'ivanechc' }
+  ];
+
+  var now = new Date();
+  var viewYear = now.getFullYear();
+  var viewMonth = now.getMonth();
+
+  function getPerson(alias) {
+    for (var i = 0; i < PEOPLE.length; i++) { if (PEOPLE[i].alias === alias) return PEOPLE[i]; }
+    return { alias: alias, name: alias, photo: '' };
+  }
+
+  function getRotation(dateStr) {
+    var date = new Date(dateStr + 'T12:00:00');
+    // If in transition week, use the NEW rotation (the one starting that week)
+    for (var i = 0; i < rotations.length; i++) {
+      var rotStart = new Date(rotations[i].start + 'T12:00:00');
+      var rotDow = rotStart.getDay();
+      var sunday = new Date(rotStart);
+      sunday.setDate(sunday.getDate() - rotDow);
+      var saturday = new Date(sunday);
+      saturday.setDate(saturday.getDate() + 6);
+      if (date >= sunday && date <= saturday) {
+        return rotations[i];
+      }
+    }
+    // Normal weeks: find active rotation
+    var active = rotations[0];
+    for (var i = 0; i < rotations.length; i++) {
+      if (dateStr >= rotations[i].start) active = rotations[i];
+      else break;
+    }
+    return active;
+  }
+
+  function todayStr() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function isTransitionWeek(dateStr) {
+    // Transition week = the full Sun-Sat week containing the 1st of a rotation month
+    var date = new Date(dateStr + 'T12:00:00');
+    for (var i = 0; i < rotations.length; i++) {
+      var rotStart = new Date(rotations[i].start + 'T12:00:00');
+      // Find Sunday of the week containing rotStart
+      var rotDow = rotStart.getDay(); // 0=Sun
+      var sunday = new Date(rotStart);
+      sunday.setDate(sunday.getDate() - rotDow);
+      var saturday = new Date(sunday);
+      saturday.setDate(saturday.getDate() + 6);
+      // Check if date is between sunday and saturday (inclusive)
+      if (date >= sunday && date <= saturday) return true;
+    }
+    return false;
+  }
+
+  function isRotationStart(dateStr) {
+    for (var i = 0; i < rotations.length; i++) {
+      if (rotations[i].start === dateStr) return true;
+    }
+    return false;
+  }
+
+  // Get who works on a specific day
+  // dow: 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+  function getShiftsForDay(dateStr, dow) {
+    var rot = getRotation(dateStr);
+    var trans = isTransitionWeek(dateStr);
+    var result = []; // [{type:'day'|'night', shift:'FD'|'BD'|'FN'|'BN', alias:...}]
+
+    if (trans) {
+      // TRANSITION WEEK pattern:
+      // BD-person: Sun(0), Mon(1), Fri(5), Sat(6) - Day
+      // FD-person: Tue(2), Wed(3), Thu(4), Fri(5) - Day
+      // FN-person: Sun(0), Mon(1), Tue(2), Wed(3) - Night
+      // BN-person: Wed(3), Thu(4), Fri(5), Sat(6) - Night
+      if (dow === 0 || dow === 1 || dow === 5 || dow === 6) {
+        result.push({ type: 'day', shift: 'BD', alias: rot.BD });
+      }
+      if (dow === 2 || dow === 3 || dow === 4 || dow === 5) {
+        result.push({ type: 'day', shift: 'FD', alias: rot.FD });
+      }
+      if (dow === 0 || dow === 1 || dow === 2 || dow === 3) {
+        result.push({ type: 'night', shift: 'FN', alias: rot.FN });
+      }
+      if (dow === 3 || dow === 4 || dow === 5 || dow === 6) {
+        result.push({ type: 'night', shift: 'BN', alias: rot.BN });
+      }
+    } else {
+      // NORMAL WEEKS:
+      // Sun-Wed (0-3): FD (day) + FN (night)
+      // Wed-Sat (3-6): BD (day) + BN (night)
+      // Wednesday (3) has both shifts (overlap/handoff day)
+      if (dow >= 0 && dow <= 3) {
+        result.push({ type: 'day', shift: 'FD', alias: rot.FD });
+        result.push({ type: 'night', shift: 'FN', alias: rot.FN });
+      }
+      if (dow >= 3 && dow <= 6) {
+        result.push({ type: 'day', shift: 'BD', alias: rot.BD });
+        result.push({ type: 'night', shift: 'BN', alias: rot.BN });
+      }
+    }
+    return result;
+  }
+
+  function renderTeam() {
+    var ds = viewYear + '-' + String(viewMonth+1).padStart(2,'0') + '-15';
+    var rot = getRotation(ds);
+    var html = '';
+    var info = [
+      { shift: 'FD', label: 'Front Day', days: 'Dom - Mie', bg: '#FFF3E0', color: '#E97F0F' },
+      { shift: 'FN', label: 'Front Night', days: 'Dom - Mie', bg: '#DEEBFF', color: '#0052CC' },
+      { shift: 'BD', label: 'Back Day', days: 'Mie - Sab', bg: '#FFF3E0', color: '#E97F0F' },
+      { shift: 'BN', label: 'Back Night', days: 'Mie - Sab', bg: '#DEEBFF', color: '#0052CC' }
+    ];
+    for (var i = 0; i < info.length; i++) {
+      var s = info[i];
+      var p = getPerson(rot[s.shift]);
+      html += '<div class="team-card">';
+      html += '<img src="' + p.photo + '"">'
+      html += '<div class="info"><div class="name">' + p.name + '</div><div class="alias">@' + p.alias + '</div><div class="days">' + s.days + '</div></div>';
+      html += '<span class="shift-tag" style="background:' + s.bg + ';color:' + s.color + '">' + s.shift + '</span>';
+      html += '</div>';
+    }
+    document.getElementById('team').innerHTML = html;
+  }
+
+  
+  function getSpanClass(shift, dow, isTrans) {
+    if (isTrans) {
+      // Transition week has its own day patterns
+      var transSpans = {
+        'BD': [0,1,5,6], // Sun,Mon,Fri,Sat
+        'FD': [2,3,4,5], // Tue,Wed,Thu,Fri
+        'FN': [0,1,2,3], // Sun,Mon,Tue,Wed
+        'BN': [3,4,5,6]  // Wed,Thu,Fri,Sat
+      };
+      var days = transSpans[shift];
+      if (!days) return 'span-single';
+      var idx = days.indexOf(dow);
+      if (idx === -1) return 'span-single';
+      // Check if consecutive
+      if (days.length === 1) return 'span-single';
+      // Find consecutive groups
+      var groups = [];
+      var group = [days[0]];
+      for (var i = 1; i < days.length; i++) {
+        if (days[i] === days[i-1] + 1) { group.push(days[i]); }
+        else { groups.push(group); group = [days[i]]; }
+      }
+      groups.push(group);
+      // Find which group this dow belongs to
+      for (var g = 0; g < groups.length; g++) {
+        var gi = groups[g].indexOf(dow);
+        if (gi !== -1) {
+          if (groups[g].length === 1) return 'span-single';
+          if (gi === 0) return 'span-start';
+          if (gi === groups[g].length - 1) return 'span-end';
+          return 'span-mid';
+        }
+      }
+      return 'span-single';
+    }
+    // Normal weeks
+    if (shift === 'FD' || shift === 'FN') {
+      // Dom-Mie: dow 0,1,2,3
+      if (dow === 0) return 'span-start';
+      if (dow === 1 || dow === 2) return 'span-mid';
+      if (dow === 3) return 'span-end';
+    }
+    if (shift === 'BD' || shift === 'BN') {
+      // Mie-Sab: dow 3,4,5,6
+      if (dow === 3) return 'span-start';
+      if (dow === 4 || dow === 5) return 'span-mid';
+      if (dow === 6) return 'span-end';
+    }
+    return 'span-single';
+  }
+
+function renderCalendar() {
+    document.getElementById('month-title').textContent = MONTHS[viewMonth] + ' ' + viewYear;
+    var first = new Date(viewYear, viewMonth, 1);
+    var last = new Date(viewYear, viewMonth + 1, 0);
+    var startDow = first.getDay();
+    var tdy = todayStr();
+    var html = '';
+    var colW = 100 / 7;
+
+    // Build array of all cells (prev month + current + next month fill)
+    var cells = [];
+    var prevLast = new Date(viewYear, viewMonth, 0).getDate();
+    for (var i = startDow - 1; i >= 0; i--) {
+      var prevDay = prevLast - i;
+      var prevDate = new Date(viewYear, viewMonth - 1, prevDay);
+      var prevDs = prevDate.getFullYear() + '-' + String(prevDate.getMonth()+1).padStart(2,'0') + '-' + String(prevDay).padStart(2,'0');
+      cells.push({ day: prevDay, other: true, date: prevDs, dow: prevDate.getDay() });
+    }
+    for (var day = 1; day <= last.getDate(); day++) {
+      var ds = viewYear + '-' + String(viewMonth+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+      var date = new Date(viewYear, viewMonth, day);
+      cells.push({ day: day, other: false, date: ds, dow: date.getDay(), isToday: ds === tdy, trans: isTransitionWeek(ds), isStart: isRotationStart(ds) });
+    }
+    var totalCells = cells.length;
+    var rem = (7 - (totalCells % 7)) % 7;
+    for (var k = 1; k <= rem; k++) {
+      var nextDate = new Date(viewYear, viewMonth + 1, k);
+      var nextDs = nextDate.getFullYear() + '-' + String(nextDate.getMonth()+1).padStart(2,'0') + '-' + String(k).padStart(2,'0');
+      cells.push({ day: k, other: true, date: nextDs, dow: nextDate.getDay() });
+    }
+
+    // Render week by week
+    for (var w = 0; w < cells.length; w += 7) {
+      html += '<div class="week-row">';
+      // Day cells
+      for (var c = 0; c < 7; c++) {
+        var cell = cells[w + c];
+        var cls = 'cal-cell';
+        if (cell.other) cls += ' other';
+        else if (cell.isToday) cls += ' today';
+        else if (cell.trans) cls += ' transition';
+        html += '<div class="' + cls + '"><div class="day-num">' + cell.day;
+        if (!cell.other && cell.isStart) html += '<span class="change-badge">CAMBIO</span>';
+        else if (!cell.other && cell.trans) html += '<span class="trans-badge">T</span>';
+        html += '</div></div>';
+      }
+
+      // Overlay bars for this week
+      // Determine which shifts apply to which columns in this week
+      var weekShifts = {}; // { 'FD': {alias, cols:[]}, 'FN':..., 'BD':..., 'BN':... }
+      for (var c = 0; c < 7; c++) {
+        var cell = cells[w + c];
+        if (!cell.date) continue;
+        var shifts = getShiftsForDay(cell.date, cell.dow);
+        for (var s = 0; s < shifts.length; s++) {
+          var sh = shifts[s];
+          var key = sh.shift;
+          if (!weekShifts[key]) weekShifts[key] = { alias: sh.alias, cols: [] };
+          weekShifts[key].cols.push(c);
+        }
+      }
+
+      // Render overlay bars - group consecutive columns
+      var barOrder = ['FD', 'BD', 'FN', 'BN'];
+      var barTop = 40; // starting top offset after day number
+      var barH = 44;
+      var barGap = 8;
+      var barIdx = 0;
+
+      for (var b = 0; b < barOrder.length; b++) {
+        var shiftKey = barOrder[b];
+        if (!weekShifts[shiftKey]) continue;
+        var cols = weekShifts[shiftKey].cols.sort(function(a,b){return a-b;});
+        var alias = weekShifts[shiftKey].alias;
+        var p = getPerson(alias);
+        
+        // Group into consecutive runs
+        var groups = [];
+        var grp = [cols[0]];
+        for (var g = 1; g < cols.length; g++) {
+          if (cols[g] === cols[g-1] + 1) { grp.push(cols[g]); }
+          else { groups.push(grp); grp = [cols[g]]; }
+        }
+        groups.push(grp);
+
+        var top = barTop + barIdx * (barH + barGap);
+        for (var gi = 0; gi < groups.length; gi++) {
+          var group = groups[gi];
+          var left = group[0] * colW;
+          var width = group.length * colW;
+          var label = '<img src="' + p.photo + '"><b>' + shiftKey + '</b> ' + p.alias.substring(0,7);
+          html += '<div class="shift-overlay so-' + shiftKey.toLowerCase() + '" style="top:' + top + 'px;left:' + left + '%;width:' + width + '%;height:' + barH + 'px;">' + label + '</div>';
+        }
+        barIdx++;
+      }
+
+      html += '</div>'; // close week-row
+    }
+
+    document.getElementById('cal-grid').innerHTML = html;
+  }
+
+function render() { renderTeam(); renderCalendar(); }
+
+  // Modal
+  var editIdx = -1;
+  function populateModal(rot) {
+    for (var i = 0; i < SHIFTS.length; i++) {
+      var sel = document.getElementById('m-' + SHIFTS[i].toLowerCase());
+      var opts = '';
+      for (var j = 0; j < PEOPLE.length; j++) {
+        var selected = (rot && rot[SHIFTS[i]] === PEOPLE[j].alias) ? ' selected' : '';
+        opts += '<option value="' + PEOPLE[j].alias + '"' + selected + '>' + PEOPLE[j].name + '</option>';
+      }
+      sel.innerHTML = opts;
+    }
+  }
+
+  function openEdit() {
+    var rot = getRotation(viewYear + '-' + String(viewMonth+1).padStart(2,'0') + '-15');
+    editIdx = rotations.indexOf(rot);
+    populateModal(rot);
+    document.getElementById('m-date').value = rot.start;
+    document.getElementById('modal-bg').classList.add('open');
+  }
+  function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
+  function saveModal() {
+    var obj = { start: document.getElementById('m-date').value, FN: document.getElementById('m-fn').value, BD: document.getElementById('m-bd').value, BN: document.getElementById('m-bn').value, FD: document.getElementById('m-fd').value };
+    if (editIdx >= 0) rotations[editIdx] = obj;
+    else rotations.push(obj);
+    rotations.sort(function(a, b) { return a.start.localeCompare(b.start); });
+    closeModal(); render();
+  }
+  function deleteRot() {
+    if (editIdx >= 0 && rotations.length > 1) { rotations.splice(editIdx, 1); closeModal(); render(); }
+  }
+
+  document.getElementById('prev-btn').addEventListener('click', function() { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } render(); });
+  document.getElementById('next-btn').addEventListener('click', function() { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } render(); });
+  document.getElementById('today-btn').addEventListener('click', function() { viewYear = now.getFullYear(); viewMonth = now.getMonth(); render(); });
+  document.getElementById('edit-btn').addEventListener('click', openEdit);
+  document.getElementById('modal-cancel').addEventListener('click', closeModal);
+  document.getElementById('modal-save').addEventListener('click', saveModal);
+  document.getElementById('modal-del').addEventListener('click', deleteRot);
+  document.getElementById('modal-bg').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+  render();
+})();
+</script>
+</body>
+</html>
