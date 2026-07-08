@@ -38,7 +38,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); background: #0f1117; }
 .cal-header div { padding: 8px; text-align: center; font-size: 13px; font-weight: 600; color: #64748b; text-transform: uppercase; }
 .cal-grid { display: flex; flex-direction: column; }
-.cal-cell { min-height: 105px; border-right: 1px solid #252830; border-bottom: 1px solid #252830; padding: 6px; position: relative; }
+.cal-cell { min-height: 90px; border-right: 1px solid #252830; border-bottom: 1px solid #252830; padding: 6px; position: relative; }
 .cal-cell:nth-child(7n) { border-right: none; }
 .cal-cell.other { opacity: 0.3; background: #12141a; }
 .cal-cell.today { background: #1e3a5f; outline: 2px solid #3B82F6; outline-offset: -2px; }
@@ -61,7 +61,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .s-bn { background: rgba(42, 122, 140, 0.55); color: #67E8F9; font-weight: 600; padding: 7px 8px; font-size: 13px; border: 1px solid rgba(42, 122, 140, 0.4); }
 
 
-.week-row { display: grid; grid-template-columns: repeat(7, 1fr); position: relative; min-height: 105px; }
+.week-row { display: grid; grid-template-columns: repeat(7, 1fr); position: relative; min-height: 90px; }
 .week-row .cal-cell { position: relative; }
 .week-row .cal-cell .shifts { display: none; }
 .shift-overlay { position: absolute; display: flex; align-items: center; gap: 4px; padding: 0 5px; font-size: 10px; font-weight: 600; overflow: hidden; white-space: nowrap; z-index: 5; pointer-events: none; }
